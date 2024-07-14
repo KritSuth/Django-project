@@ -25,6 +25,25 @@ def form(request):
         messages.success(request,"บันทึกข้อมูลเรียบร้อยแล้ว")
         #เปลี่ยนเส้นทาง
         return redirect("/")
-
     else :
         return render(request,"form.html")
+    
+def edit(request,person_id):
+    #บันทึกการเปลี่ยนแปลงข้อมูลเมื่อมีการเปลี่ยนแปลงซึ่งก็คือมีPOSTเกิดขึ้น
+    if request.method == "POST":
+        person = Person.objects.get(id=person_id)
+        person.name = request.POST["name"]
+        person.age = request.POST["age"]
+        person.save()
+        messages.success(request,"อัพเดทข้อมูลเรียบร้อย")
+        #เปลี่ยนเส้นทาง
+        return redirect("/")
+    else:
+        person = Person.objects.get(id=person_id)
+        return render(request,"edit.html",{"person":person})
+    
+def delete(request,person_id):
+    person = Person.objects.get(id=person_id)
+    person.delete()
+    messages.success(request,"ลบข้อมูลเรียบร้อยแล้ว")
+    return redirect("/")
